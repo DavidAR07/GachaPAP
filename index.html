@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html>e
 <html lang="id">
  <head>
   <meta charset="UTF-8">
@@ -519,6 +519,60 @@
   opacity: 1;
 }
 
+2. HTML untuk toast dan section download:
+
+3. JavaScript functions:
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+function saveToExcel() {
+  // Check if there are any assignments
+  const assignedGroups = Object.keys(assignments);
+  if (assignedGroups.length === 0) {
+    showToast('⚠️ Belum ada hasil gacha untuk disimpan!');
+    return;
+  }
+
+  // Create CSV content
+  let csvContent = '\uFEFF'; // UTF-8 BOM for Excel compatibility
+  csvContent += 'Kelompok,Judul Praktikum\n';
+  
+  // Sort by group number and add data
+  for (let i = 1; i <= 20; i++) {
+    if (assignments[i]) {
+      const title = assignments[i].title.replace(/,/g, ';'); // Replace commas to avoid CSV issues
+      csvContent += `Kelompok ${i},"${title}"\n`;
+    }
+  }
+
+  // Create blob and download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  // Generate filename with timestamp
+  const now = new Date();
+  const timestamp = now.toISOString().slice(0, 19).replace(/:/g, '-');
+  const filename = `Hasil_Gacha_Praktikum_${timestamp}.csv`;
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  showToast('✅ File Excel berhasil didownload!');
+}
+
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -607,9 +661,11 @@
     <h2 class="groups-title">⚔️ Royal Guild Roster ⚔️</h2>
     <div id="groupsList"></div>
    </div>
+  </div>
+  
     <!-- ✅ Section untuk tombol Save (ditambahkan otomatis) -->
-    <div id="saveSection" style="text-align: center; margin-top: 30px; display: none;">
-      <button class="save-button" onclick="saveToExcel()">💾 Simpan Hasil Gacha ke Excel 💾</button>
+    <div id="saveSection" style="display: none; text-align: center; margin-top: 20px;">
+      <button class="save-button" onclick="saveToExcel()">💾 Simpan Hasil Gacha</button>
     </div>
 
     <!-- ✅ Toast notification (untuk showToast) -->
@@ -644,13 +700,12 @@ const praktikumTitles = [
   { title: "Shadow Sensor Alarm Using LM 741", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
   { title: "Topeng Ilusi: Virtual Reality System", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" }
 ];
-    
-    var availableTitles = [...praktikumTitles];
-    var assignments = {};
-    var isAnimating = false;
-    var selectedGroup = null;
-    // expose assignments globally so fallback saveToExcel can access the current assignments object
-    window.assignments = assignments;
+
+    let availableTitles = [...praktikumTitles];
+    let assignments = {};
+    let isAnimating = false;
+    let selectedGroup = null;
+
     function renderGroupButtons() {
       const groupButtons = document.getElementById('groupButtons');
       groupButtons.innerHTML = '';
@@ -688,31 +743,32 @@ const praktikumTitles = [
       document.getElementById('gachaButton').style.display = 'inline-block';
     }
 
-function deleteAssignment(groupNumber) {
-  if (!assignments[groupNumber]) return;
-  
-  const titleData = assignments[groupNumber];
-  availableTitles.push(titleData);
-  delete assignments[groupNumber];
-  
-  renderGroupsList(); // Ini akan otomatis mengatur visibility tombol save
-  renderGroupButtons();
-  
-  if (document.getElementById('resetButton').style.display === 'inline-block') {
-    document.getElementById('resetButton').style.display = 'none';
-    document.getElementById('groupSelector').style.display = 'block';
-    document.getElementById('resultDisplay').style.display = 'none';
-  }
+    function deleteAssignment(groupNumber) {
+      if (!assignments[groupNumber]) return;
+      
+      const titleData = assignments[groupNumber];
+      availableTitles.push(titleData);
+      delete assignments[groupNumber];
+      
+      renderGroupsList();
+      renderGroupButtons();
+      // Hide save section if no assignments left
+if (Object.keys(assignments).length === 0) {
+  document.getElementById('saveSection').style.display = 'none';
 }
+      if (document.getElementById('resetButton').style.display === 'inline-block') {
+        document.getElementById('resetButton').style.display = 'none';
+        document.getElementById('groupSelector').style.display = 'block';
+        document.getElementById('resultDisplay').style.display = 'none';
+      }
+    }
 
-// Modifikasi fungsi renderGroupsList()
-function renderGroupsList() {
-  const groupsList = document.getElementById('groupsList');
-  groupsList.innerHTML = '';
-  
-  // Render group items
-  for (let i = 1; i <= 20; i++) {
-    const groupItem = document.createElement('div');
+    function renderGroupsList() {
+      const groupsList = document.getElementById('groupsList');
+      groupsList.innerHTML = '';
+      
+      for (let i = 1; i <= 20; i++) {
+        const groupItem = document.createElement('div');
         groupItem.className = 'group-item' + (assignments[i] ? ' assigned' : '');
         
         const groupInfo = document.createElement('div');
@@ -736,24 +792,11 @@ function renderGroupsList() {
           deleteBtn.textContent = '🗑️ Hapus';
           deleteBtn.onclick = () => deleteAssignment(i);
           groupItem.appendChild(deleteBtn);
-
-  }
-  
-  // Tambahkan tombol save di bawah list
-  const saveButton = document.createElement('div');
-  saveButton.style.textAlign = 'center';
-  saveButton.style.marginTop = '30px';
-  saveButton.innerHTML = `
-    <button class="save-button" onclick="saveToExcel()">
-      💾 Simpan Hasil Gacha
-    </button>
-  `;
-  
-  // Hanya tampilkan tombol jika ada assignments
-  if (Object.keys(assignments).length > 0) {
-    groupsList.appendChild(saveButton);
-  }
-}
+        }
+        
+        groupsList.appendChild(groupItem);
+      }
+    }
 
     function performGacha() {
       if (isAnimating || availableTitles.length === 0 || !selectedGroup) return;
@@ -824,11 +867,10 @@ document.getElementById('saveSection').style.display = 'block';
         document.getElementById('groupSelector').style.display = 'block';
       }
     }
+
     function resetGacha() {
       availableTitles = [...praktikumTitles];
       assignments = {};
-      // keep global reference in sync for fallback save function
-      window.assignments = assignments;
       selectedGroup = null;
       
       document.getElementById('groupSelector').style.display = 'block';
@@ -871,7 +913,7 @@ document.getElementById('saveSection').style.display = 'block';
     renderGroupButtons();
     renderGroupsList();
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99c3044b30a35e29',t:'MTc2Mjc1MTE0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99c3044b30a35e29',t:'MTc2Mjc1MTE0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 <script>
 /* Safety definitions: if the page doesn't already define showToast or saveToExcel,
    we provide minimal compatible implementations so the Save button works. */
@@ -896,6 +938,7 @@ document.getElementById('saveSection').style.display = 'block';
   if (typeof window.saveToExcel !== 'function') {
     window.saveToExcel = function() {
       try {
+        // gather assignments object if available
         var assignments = window.assignments || {};
         var hasAny = Object.keys(assignments).length > 0;
         if (!hasAny) {
@@ -905,7 +948,7 @@ document.getElementById('saveSection').style.display = 'block';
         var csv = '\uFEFFKelompok,Judul Praktikum\n';
         for (var i = 1; i <= 20; i++) {
           if (assignments[i]) {
-            var title = String(assignments[i].title || assignments[i]).replace(/"/g, '""');
+            var title = String(assignments[i]).replace(/"/g, '""');
             csv += 'Kelompok ' + i + ',"' + title + '"\n';
           }
         }
@@ -925,10 +968,7 @@ document.getElementById('saveSection').style.display = 'block';
       }
     };
   }
-
-  // make sure UI is up to date
-  if (typeof renderGroupButtons === 'function') renderGroupButtons();
-  if (typeof renderGroupsList === 'function') renderGroupsList();
 })();
 </script>
+</body>
 </html>
