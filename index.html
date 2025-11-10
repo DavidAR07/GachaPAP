@@ -1,11 +1,10 @@
-<!doctype html>
+<!doctype html>e
 <html lang="id">
-<head>
+ <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fantasy Praktikum Gacha</title>
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
   <style>
     body {
       box-sizing: border-box;
@@ -13,7 +12,7 @@
       padding: 0;
       font-family: 'Cinzel', 'Trajan Pro', 'Georgia', serif;
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 25%, #0f0f0f 50%, #1a1410 75%, #000000 100%);
-      min-height: 100vh;
+      min-height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -28,7 +27,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image:
+      background-image: 
         repeating-linear-gradient(90deg, rgba(198, 151, 45, 0.02) 0px, transparent 2px, transparent 4px, rgba(198, 151, 45, 0.02) 6px),
         repeating-linear-gradient(0deg, rgba(198, 151, 45, 0.02) 0px, transparent 2px, transparent 4px, rgba(198, 151, 45, 0.02) 6px),
         radial-gradient(circle at 30% 40%, rgba(198, 151, 45, 0.08) 0%, transparent 50%),
@@ -39,8 +38,14 @@
 
     .container {
       width: 90%;
-      max-width: 850px;
+      max-width: 800px;
       padding: 40px;
+      text-align: center;
+    }
+
+    .header {
+      margin-bottom: 40px;
+      animation: fadeIn 1s ease-in;
       text-align: center;
     }
 
@@ -48,9 +53,10 @@
       font-size: 52px;
       font-weight: bold;
       color: #c6972d;
-      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9), 0 0 30px rgba(198, 151, 45, 0.6);
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9), 0 0 30px rgba(198, 151, 45, 0.6), 0 1px 0 rgba(255, 215, 0, 0.4), 0 0 50px rgba(192, 192, 192, 0.2);
       margin-bottom: 15px;
       letter-spacing: 4px;
+      text-align: center;
       text-transform: uppercase;
     }
 
@@ -58,65 +64,189 @@
       font-size: 22px;
       color: #c0c0c0;
       font-style: italic;
+      text-align: center;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
       letter-spacing: 2px;
-      margin-bottom: 40px;
     }
 
-    .save-button {
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(22, 163, 74, 0.2));
-      color: #4ade80;
-      border: 2px solid rgba(34, 197, 94, 0.5);
-      padding: 14px 35px;
-      font-size: 17px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 20px;
-      margin-left: 15px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+    .gacha-container {
+      background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(15, 10, 10, 0.95));
+      backdrop-filter: blur(15px);
+      border: 4px solid #c6972d;
+      border-image: linear-gradient(135deg, #c6972d, #8b0000, #c6972d) 1;
+      border-radius: 15px;
+      padding: 45px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), inset 0 2px 0 rgba(198, 151, 45, 0.3), 0 0 40px rgba(198, 151, 45, 0.4);
+      position: relative;
     }
 
-    .save-button:hover {
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.5), rgba(22, 163, 74, 0.4));
-      border-color: #22c55e;
-      color: #ffffff;
-      box-shadow: 0 4px 20px rgba(34, 197, 94, 0.6),
-                  0 0 25px rgba(34, 197, 94, 0.4);
-      transform: translateY(-2px);
+    .gacha-container::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      background: linear-gradient(45deg, #c6972d, #c0c0c0, #8b0000, #c6972d);
+      border-radius: 15px;
+      z-index: -1;
+      opacity: 0.3;
     }
 
-    .toast {
+    .crystal-ball {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 30px;
+      position: relative;
+    }
+
+    .crystal-ball svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 4px 12px rgba(217, 70, 166, 0.3));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .result-display {
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .result-overlay {
       position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(22, 163, 74, 0.95));
-      color: #ffffff;
-      padding: 16px 32px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: overlayFadeIn 0.3s ease-out;
+    }
+
+    .result-overlay.show {
+      display: flex;
+    }
+
+    .result-card {
+      background: linear-gradient(135deg, rgba(20, 20, 20, 0.98), rgba(10, 10, 10, 0.98));
+      border: 5px solid #c6972d;
+      border-radius: 15px;
+      padding: 65px 55px;
+      animation: cardAppear 0.6s ease-out;
+      box-shadow: 0 15px 60px rgba(0, 0, 0, 0.95), 0 0 80px rgba(198, 151, 45, 0.6), inset 0 2px 0 rgba(255, 215, 0, 0.3);
+      width: 90%;
+      max-width: 1000px;
+      position: relative;
+      backdrop-filter: blur(25px);
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      border: 2px solid rgba(198, 151, 45, 0.5);
       border-radius: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 40px rgba(34, 197, 94, 0.6);
-      z-index: 2000;
-      opacity: 0;
-      transition: opacity 0.3s ease;
       pointer-events: none;
     }
 
-    .toast.show {
-      opacity: 1;
+    @keyframes overlayFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
-    .gacha-button, .reset-button {
-      margin: 10px;
+    .group-number {
+      font-size: 36px;
+      color: #c6972d;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9), 0 0 25px rgba(198, 151, 45, 0.6);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .praktikum-title {
+      font-size: 40px;
+      color: #f5f5f5;
+      font-weight: bold;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9), 0 0 20px rgba(198, 151, 45, 0.4);
+      line-height: 1.5;
+    }
+
+    .title-image {
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 30px;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 5px solid #c6972d;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9), 0 0 50px rgba(198, 151, 45, 0.6), inset 0 2px 0 rgba(255, 215, 0, 0.3);
+      animation: imageAppear 0.7s ease-out;
+      background: linear-gradient(135deg, rgba(198, 151, 45, 0.3), rgba(20, 20, 20, 0.8));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .title-image::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border: 2px solid rgba(198, 151, 45, 0.4);
+      border-radius: 10px;
+      pointer-events: none;
+    }
+
+    .title-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .title-image.no-image {
+      font-size: 90px;
+      color: #c6972d;
+      text-shadow: 0 0 40px rgba(198, 151, 45, 0.9);
+    }
+
+    @keyframes imageAppear {
+      from {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
     }
 
     .gacha-button {
       background: linear-gradient(135deg, #c6972d, #ffd700, #c0c0c0);
-      color: #000;
+      color: #000000;
       border: 3px solid #c6972d;
       padding: 20px 60px;
       font-size: 24px;
@@ -124,6 +254,43 @@
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.4s ease;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8), 0 0 40px rgba(198, 151, 45, 0.5), inset 0 2px 0 rgba(255, 215, 0, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gacha-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .gacha-button:hover::before {
+      left: 100%;
+    }
+
+    .gacha-button:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9), 0 0 60px rgba(198, 151, 45, 0.7), 0 0 40px rgba(192, 192, 192, 0.4);
+      background: linear-gradient(135deg, #ffd700, #c0c0c0, #ffed4e);
+      border-color: #c0c0c0;
+    }
+
+    .gacha-button:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .gacha-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .reset-button {
@@ -135,6 +302,29 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
+      margin-top: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .reset-button:hover {
+      background: linear-gradient(135deg, rgba(198, 151, 45, 0.3), rgba(139, 0, 0, 0.2));
+      border-color: rgba(198, 151, 45, 0.7);
+      color: #ffd700;
+      box-shadow: 0 4px 20px rgba(198, 151, 45, 0.5), 0 0 15px rgba(139, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .group-selector {
+      margin-bottom: 30px;
+    }
+
+    .group-buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .group-btn {
@@ -149,14 +339,47 @@
       transition: all 0.3s ease;
     }
 
+    .group-btn:hover {
+      background: linear-gradient(135deg, rgba(198, 151, 45, 0.5), rgba(139, 0, 0, 0.3));
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(198, 151, 45, 0.5), 0 0 15px rgba(192, 192, 192, 0.3);
+      border-color: #c6972d;
+      color: #ffd700;
+    }
+
+    .group-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .group-btn.selected {
       background: linear-gradient(135deg, #c6972d, #ffd700, #c0c0c0);
-      color: #000;
+      color: #000000;
+      border-color: #c6972d;
+      box-shadow: 0 6px 25px rgba(198, 151, 45, 0.7), 0 0 40px rgba(192, 192, 192, 0.5), 0 0 20px rgba(139, 0, 0, 0.3);
       transform: scale(1.05);
+    }
+
+    .groups-list {
+      margin-top: 40px;
+      text-align: left;
+    }
+
+    .groups-title {
+      font-size: 28px;
+      color: #c6972d;
+      margin-bottom: 25px;
+      text-align: center;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 20px rgba(198, 151, 45, 0.5);
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
 
     .group-item {
       background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(10, 10, 10, 0.7));
+      border-left: 5px solid rgba(198, 151, 45, 0.5);
+      border: 2px solid rgba(198, 151, 45, 0.3);
       border-left: 5px solid rgba(198, 151, 45, 0.5);
       padding: 18px;
       margin: 12px 0;
@@ -165,158 +388,587 @@
       justify-content: space-between;
       align-items: center;
       gap: 15px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
       transition: all 0.3s ease;
+    }
+
+    .group-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 25px rgba(198, 151, 45, 0.3);
     }
 
     .group-item.assigned {
       border-left-color: #c6972d;
-      box-shadow: 0 0 15px rgba(198, 151, 45, 0.5);
-      background: linear-gradient(135deg, rgba(198, 151, 45, 0.2), rgba(10, 10, 10, 0.8));
+      border-color: rgba(198, 151, 45, 0.6);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7), 0 0 30px rgba(198, 151, 45, 0.4);
+      background: linear-gradient(135deg, rgba(198, 151, 45, 0.3), rgba(20, 20, 20, 0.8));
+    }
+
+    .group-info {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .group-label {
+      color: #c0c0c0;
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    .group-assignment {
+      color: #c6972d;
+      font-size: 17px;
+      font-style: italic;
+      flex: 1;
+      text-align: right;
+    }
+
+    .delete-btn {
+      background: rgba(255, 59, 48, 0.4);
+      border: 2px solid rgba(255, 59, 48, 0.6);
+      color: #ff3b30;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .delete-btn:hover {
+      background: rgba(255, 59, 48, 0.6);
+      border-color: #ff3b30;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 59, 48, 0.4);
+      border: 2px solid rgba(255, 59, 48, 0.6);
+      color: #ff3b30;
+      width: 40px;
+      height: 40px;
+      font-size: 22px;
+      font-weight: bold;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 59, 48, 0.7);
+      border-color: #ff3b30;
+      color: #ffffff;
+      transform: rotate(90deg) scale(1.1);
+    }
+
+   .save-button {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(22, 163, 74, 0.2));
+  color: #4ade80;
+  border: 2px solid rgba(34, 197, 94, 0.5);
+  padding: 14px 35px;
+  font-size: 17px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  margin-left: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.save-button:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.5), rgba(22, 163, 74, 0.4));
+  border-color: #22c55e;
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.6), 0 0 25px rgba(34, 197, 94, 0.4);
+  transform: translateY(-2px);
+}
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(22, 163, 74, 0.95));
+  color: #ffffff;
+  padding: 16px 32px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 40px rgba(34, 197, 94, 0.6);
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+2. HTML untuk toast dan section download:
+
+3. JavaScript functions:
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+function saveToExcel() {
+  // Check if there are any assignments
+  const assignedGroups = Object.keys(assignments);
+  if (assignedGroups.length === 0) {
+    showToast('⚠️ Belum ada hasil gacha untuk disimpan!');
+    return;
+  }
+
+  // Create CSV content
+  let csvContent = '\uFEFF'; // UTF-8 BOM for Excel compatibility
+  csvContent += 'Kelompok,Judul Praktikum\n';
+  
+  // Sort by group number and add data
+  for (let i = 1; i <= 20; i++) {
+    if (assignments[i]) {
+      const title = assignments[i].title.replace(/,/g, ';'); // Replace commas to avoid CSV issues
+      csvContent += `Kelompok ${i},"${title}"\n`;
+    }
+  }
+
+  // Create blob and download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  // Generate filename with timestamp
+  const now = new Date();
+  const timestamp = now.toISOString().slice(0, 19).replace(/:/g, '-');
+  const filename = `Hasil_Gacha_Praktikum_${timestamp}.csv`;
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  showToast('✅ File Excel berhasil didownload!');
+}
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes cardAppear {
+      from {
+        opacity: 0;
+        transform: scale(0.8) rotateY(90deg);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) rotateY(0deg);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    .pulsing {
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spinning {
+      animation: spin 1s linear infinite;
     }
   </style>
-</head>
-<body>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="result-overlay" id="resultOverlay"></div>
   <div class="container">
-    <h1 class="title">🏰 Royal Praktikum Quest 🏰</h1>
-    <p class="subtitle">Kastil kerajaan menentukan misi praktikummu...</p>
-
-    <div id="groupSelector">
-      <p style="color: #c0c0c0; font-size: 19px;">Pilih Kelompok:</p>
-      <div id="groupButtons" class="grid grid-cols-5 gap-3 justify-center"></div>
+   <div class="header">
+    <h1 class="title" id="mainTitle">🏰 Royal Praktikum Quest 🏰</h1>
+    <p class="subtitle" id="subtitle">Kastil kerajaan menentukan misi praktikummu...</p>
+   </div>
+   <div class="gacha-container">
+    <div class="crystal-ball" id="crystalBall">
+     <svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>
+       <radialgradient id="crystalGradient">
+        <stop offset="0%" style="stop-color:#ffd700;stop-opacity:0.9" />
+        <stop offset="30%" style="stop-color:#c6972d;stop-opacity:0.85" />
+        <stop offset="60%" style="stop-color:#c0c0c0;stop-opacity:0.75" />
+        <stop offset="85%" style="stop-color:#8b0000;stop-opacity:0.65" />
+        <stop offset="100%" style="stop-color:#4a4a4a;stop-opacity:0.6" />
+       </radialgradient>
+       <radialgradient id="glowGradient">
+        <stop offset="0%" style="stop-color:#c6972d;stop-opacity:0.6" />
+        <stop offset="100%" style="stop-color:#000000;stop-opacity:0" />
+       </radialgradient>
+      </defs> <circle cx="100" cy="100" r="90" fill="url(#glowGradient)" opacity="0.7" /> <circle cx="100" cy="100" r="80" fill="url(#crystalGradient)" stroke="#c6972d" stroke-width="4" /> <ellipse cx="100" cy="75" rx="55" ry="35" fill="rgba(198,151,45,0.4)" /> <circle cx="65" cy="65" r="18" fill="rgba(255,215,0,0.7)" /> <circle cx="120" cy="90" r="10" fill="rgba(212,175,55,0.6)" />
+     </svg>
     </div>
-
-    <div id="resultDisplay" style="display: none; margin-top: 20px;">
-      <p style="color: #c6972d;">Klik tombol untuk mengundi judul praktikum</p>
+    <div class="group-selector" id="groupSelector">
+     <p style="color: #c0c0c0; font-size: 19px; margin-bottom: 20px; letter-spacing: 1px;">Pilih Kelompok:</p>
+     <div class="group-buttons" id="groupButtons"></div>
     </div>
-
-    <button class="gacha-button" id="gachaButton" onclick="performGacha()" style="display:none;">⚔️ Mulai Quest ⚔️</button>
-    <button class="reset-button" id="resetButton" onclick="resetGacha()" style="display:none;">🔄 Reset Quest</button>
-
-    <div class="groups-list" style="margin-top: 40px;">
-      <h2 style="color: #c6972d; text-transform: uppercase;">⚔️ Royal Guild Roster ⚔️</h2>
-      <div id="groupsList"></div>
-    </div>
-
-    <!-- ✅ Section Save -->
-    <div id="saveSection" style="display:none; text-align:center;">
+    <div class="result-display" id="resultDisplay" style="display: none;">
+     <p style="color: #d4af37; font-size: 19px; font-style: italic;">Klik tombol untuk mengundi judul praktikum</p>
+    </div><button class="gacha-button" id="gachaButton" onclick="performGacha()" style="display: none;"> <span id="buttonText">⚔️ Mulai Quest ⚔️</span> </button> <button class="reset-button" id="resetButton" onclick="resetGacha()" style="display: none;"> <span id="resetText">🔄 Reset Quest</span> </button>
+   </div>
+   <div class="groups-list">
+    <h2 class="groups-title">⚔️ Royal Guild Roster ⚔️</h2>
+    <div id="groupsList"></div>
+   </div>
+  </div>
+  
+    <!-- ✅ Section untuk tombol Save (ditambahkan otomatis) -->
+    <div id="saveSection" style="display: none; text-align: center; margin-top: 20px;">
       <button class="save-button" onclick="saveToExcel()">💾 Simpan Hasil Gacha</button>
     </div>
-  </div>
 
-  <div id="toast" class="toast"></div>
+    <!-- ✅ Toast notification (untuk showToast) -->
+    <div id="toast" class="toast"></div>
+<script>
+    const defaultConfig = {
+      main_title: "🏰 Royal Praktikum Quest 🏰",
+      subtitle: "Kastil kerajaan menentukan misi praktikummu...",
+      gacha_button_text: "⚔️ Mulai Quest ⚔️",
+      reset_button_text: "🔄 Reset Quest"
+    };
 
-  <script>
-    const praktikumTitles = [
-      "Desain dan Rancang Tangga Nada Berbasis Filter Band Pass",
-      "Karakteristik Photodioda",
-      "Water level detector using lm741",
-      "LED Chaser (BC547 Transistor LED Flasher)",
-      "Metal detector using bc547",
-      "Obstacle Detector",
-      "Fire Detector Alarm using BC547",
-      "Logic Gate Circuit with 1N4148-BC547",
-      "Rangkaian pengusir nyamuk",
-      "Inverter DC to AC (Square Wave)",
-      "Sistem Keamanan Laser",
-      "Sound-Triggered LED Circuit",
-      "Otomatic Solar Tracker",
-      "Flip-Flop 3 LED",
-      "Rain Level Detector",
-      "Metal Detector",
-      "Lampu Darurat Otomatis",
-      "Radio AM Sederhana",
-      "Shadow Sensor Alarm Using LM 741",
-      "Topeng Ilusi: Virtual Reality System"
-    ];
+const praktikumTitles = [
+  { title: "Desain dan Rancang Tangga Nada Berbasis Filter Band Pass", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Karakteristik Photodioda", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Water level detector using lm741", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "LED Chaser (BC547 Transistor LED Flasher)", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Metal detector using bc547", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Obstacle Detector", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Fire Detector Alarm using BC547", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Logic Gate Circuit with 1N4148-BC547", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Rangkaian pengusir nyamuk", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Inverter DC to AC (Square Wave)", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Sistem Keamanan Laser", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Rangkaian Pemicu LED Berbasis Sinyal Suara (Sound-Triggered LED Circuit)", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "otomatic solar single axis tracker", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Flip-Flop 3 LED (LED Traffic Light)", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Rain Level Detector", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Metal detector", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Lampu Darurat Otomatis dengan Alarm Peringatan", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Radio AM Sederhana dengan Penguat Audio Transistor & Op-Amp", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Shadow Sensor Alarm Using LM 741", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" },
+  { title: "Topeng Ilusi: Virtual Reality System", imageUrl: "https://i.imgur.com/UZADFr0.jpeg" }
+];
 
     let availableTitles = [...praktikumTitles];
     let assignments = {};
+    let isAnimating = false;
     let selectedGroup = null;
 
     function renderGroupButtons() {
-      const container = document.getElementById('groupButtons');
-      container.innerHTML = '';
+      const groupButtons = document.getElementById('groupButtons');
+      groupButtons.innerHTML = '';
+      
       for (let i = 1; i <= 20; i++) {
         const btn = document.createElement('button');
         btn.className = 'group-btn';
         btn.textContent = i;
-        btn.disabled = assignments[i];
+        btn.disabled = assignments[i] ? true : false;
         btn.onclick = () => selectGroup(i);
-        container.appendChild(btn);
+        groupButtons.appendChild(btn);
       }
     }
 
     function selectGroup(groupNumber) {
+      if (assignments[groupNumber]) return;
+      
       selectedGroup = groupNumber;
+      
+      const buttons = document.querySelectorAll('.group-btn');
+      buttons.forEach((btn, index) => {
+        if (index + 1 === groupNumber) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
+      
+      document.getElementById('groupSelector').style.display = 'none';
       document.getElementById('resultDisplay').style.display = 'block';
+      document.getElementById('resultDisplay').innerHTML = `
+        <p style="color: #c6972d; font-size: 22px; font-weight: bold;">Kelompok ${groupNumber} terpilih!</p>
+        <p style="color: #d4af37; font-size: 18px; font-style: italic; margin-top: 10px;">Klik tombol untuk mengundi judul praktikum</p>
+      `;
       document.getElementById('gachaButton').style.display = 'inline-block';
     }
 
-    function performGacha() {
-      if (!selectedGroup || availableTitles.length === 0) return;
-      const randomIndex = Math.floor(Math.random() * availableTitles.length);
-      const selectedTitle = availableTitles.splice(randomIndex, 1)[0];
-      assignments[selectedGroup] = selectedTitle;
+    function deleteAssignment(groupNumber) {
+      if (!assignments[groupNumber]) return;
+      
+      const titleData = assignments[groupNumber];
+      availableTitles.push(titleData);
+      delete assignments[groupNumber];
+      
       renderGroupsList();
       renderGroupButtons();
-      document.getElementById('saveSection').style.display = 'block';
-      selectedGroup = null;
-      document.getElementById('resultDisplay').style.display = 'none';
-      document.getElementById('gachaButton').style.display = 'none';
+      // Hide save section if no assignments left
+if (Object.keys(assignments).length === 0) {
+  document.getElementById('saveSection').style.display = 'none';
+}
+      if (document.getElementById('resetButton').style.display === 'inline-block') {
+        document.getElementById('resetButton').style.display = 'none';
+        document.getElementById('groupSelector').style.display = 'block';
+        document.getElementById('resultDisplay').style.display = 'none';
+      }
     }
 
     function renderGroupsList() {
-      const list = document.getElementById('groupsList');
-      list.innerHTML = '';
+      const groupsList = document.getElementById('groupsList');
+      groupsList.innerHTML = '';
+      
       for (let i = 1; i <= 20; i++) {
-        const div = document.createElement('div');
-        div.className = 'group-item' + (assignments[i] ? ' assigned' : '');
-        div.innerHTML = `
-          <span style="color:#c0c0c0;font-weight:bold;">Kelompok ${i}</span>
-          <span style="color:#c6972d;">${assignments[i] || '—'}</span>
+        const groupItem = document.createElement('div');
+        groupItem.className = 'group-item' + (assignments[i] ? ' assigned' : '');
+        
+        const groupInfo = document.createElement('div');
+        groupInfo.className = 'group-info';
+        
+        const groupLabel = document.createElement('span');
+        groupLabel.className = 'group-label';
+        groupLabel.textContent = `Kelompok ${i}`;
+        
+        const groupAssignment = document.createElement('span');
+        groupAssignment.className = 'group-assignment';
+        groupAssignment.textContent = assignments[i] ? assignments[i].title : '—';
+        
+        groupInfo.appendChild(groupLabel);
+        groupInfo.appendChild(groupAssignment);
+        groupItem.appendChild(groupInfo);
+        
+        if (assignments[i]) {
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'delete-btn';
+          deleteBtn.textContent = '🗑️ Hapus';
+          deleteBtn.onclick = () => deleteAssignment(i);
+          groupItem.appendChild(deleteBtn);
+        }
+        
+        groupsList.appendChild(groupItem);
+      }
+    }
+
+    function performGacha() {
+      if (isAnimating || availableTitles.length === 0 || !selectedGroup) return;
+      
+      isAnimating = true;
+      const button = document.getElementById('gachaButton');
+      const crystalBall = document.getElementById('crystalBall');
+      const resultDisplay = document.getElementById('resultDisplay');
+      const resultOverlay = document.getElementById('resultOverlay');
+      
+      button.disabled = true;
+      crystalBall.classList.add('spinning');
+      
+      resultDisplay.innerHTML = '<p style="color: #c6972d; font-size: 20px; font-weight: bold;">⚔️ Mengundi... ⚔️</p>';
+      
+      setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * availableTitles.length);
+        const selectedData = availableTitles[randomIndex];
+        availableTitles.splice(randomIndex, 1);
+        
+        assignments[selectedGroup] = selectedData;
+        
+        crystalBall.classList.remove('spinning');
+        crystalBall.classList.add('pulsing');
+        
+        const imageHtml = selectedData.imageUrl 
+          ? `<img src="${selectedData.imageUrl}" alt="${selectedData.title}" onerror="this.parentElement.classList.add('no-image'); this.parentElement.innerHTML='⚔️';">`
+          : '⚔️';
+        
+        resultOverlay.innerHTML = `
+          <div class="result-card">
+            <button class="close-btn" onclick="closeResult()">✕</button>
+            <div class="title-image ${selectedData.imageUrl ? '' : 'no-image'}">
+              ${imageHtml}
+            </div>
+            <div class="group-number">Kelompok ${selectedGroup}</div>
+            <div class="praktikum-title">${selectedData.title}</div>
+          </div>
         `;
-        list.appendChild(div);
+        resultOverlay.classList.add('show');
+        
+        renderGroupsList();
+        renderGroupButtons();
+        
+        setTimeout(() => {
+          crystalBall.classList.remove('pulsing');
+          button.disabled = false;
+          button.style.display = 'none';
+          resultDisplay.style.display = 'none';
+          isAnimating = false;
+          selectedGroup = null;
+
+         // Show save section when there are assignments
+document.getElementById('saveSection').style.display = 'block';
+         
+          if (availableTitles.length === 0) {
+            document.getElementById('resetButton').style.display = 'inline-block';
+          }
+        }, 500);
+      }, 2000);
+    }
+
+    function closeResult() {
+      const resultOverlay = document.getElementById('resultOverlay');
+      resultOverlay.classList.remove('show');
+      
+      if (availableTitles.length > 0) {
+        document.getElementById('groupSelector').style.display = 'block';
       }
     }
 
     function resetGacha() {
       availableTitles = [...praktikumTitles];
       assignments = {};
-      renderGroupsList();
-      renderGroupButtons();
+      selectedGroup = null;
+      
+      document.getElementById('groupSelector').style.display = 'block';
+      document.getElementById('resultDisplay').style.display = 'none';
+      document.getElementById('resultDisplay').innerHTML = '<p style="color: #8b5cf6; font-size: 18px; font-style: italic;">Klik tombol untuk mengundi judul praktikum</p>';
+      document.getElementById('gachaButton').style.display = 'none';
+      document.getElementById('resetButton').style.display = 'none';
       document.getElementById('saveSection').style.display = 'none';
+     
+      renderGroupButtons();
+      renderGroupsList();
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
+    async function onConfigChange(config) {
+      document.getElementById('mainTitle').textContent = config.main_title || defaultConfig.main_title;
+      document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
+      document.getElementById('buttonText').textContent = config.gacha_button_text || defaultConfig.gacha_button_text;
+      document.getElementById('resetText').textContent = config.reset_button_text || defaultConfig.reset_button_text;
     }
 
-    function saveToExcel() {
-      if (Object.keys(assignments).length === 0) {
-        showToast('⚠️ Belum ada hasil gacha untuk disimpan!');
-        return;
-      }
-      let csv = '\uFEFFKelompok,Judul Praktikum\n';
-      for (let i = 1; i <= 20; i++) {
-        if (assignments[i]) csv += `Kelompok ${i},"${assignments[i]}"\n`;
-      }
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-      link.href = url;
-      link.download = `Hasil_Gacha_Praktikum_${timestamp}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast('✅ File Excel berhasil didownload!');
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: defaultConfig,
+        onConfigChange: onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["main_title", config.main_title || defaultConfig.main_title],
+          ["subtitle", config.subtitle || defaultConfig.subtitle],
+          ["gacha_button_text", config.gacha_button_text || defaultConfig.gacha_button_text],
+          ["reset_button_text", config.reset_button_text || defaultConfig.reset_button_text]
+        ])
+      });
     }
 
     renderGroupButtons();
     renderGroupsList();
   </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99c3044b30a35e29',t:'MTc2Mjc1MTE0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>
+/* Safety definitions: if the page doesn't already define showToast or saveToExcel,
+   we provide minimal compatible implementations so the Save button works. */
+(function(){
+  function defaultShowToast(msg) {
+    var toast = document.getElementById('toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'toast';
+      toast.className = 'toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 3000);
+  }
+
+  if (typeof window.showToast !== 'function') {
+    window.showToast = defaultShowToast;
+  }
+
+  if (typeof window.saveToExcel !== 'function') {
+    window.saveToExcel = function() {
+      try {
+        // gather assignments object if available
+        var assignments = window.assignments || {};
+        var hasAny = Object.keys(assignments).length > 0;
+        if (!hasAny) {
+          window.showToast('⚠️ Belum ada hasil gacha untuk disimpan!');
+          return;
+        }
+        var csv = '\uFEFFKelompok,Judul Praktikum\n';
+        for (var i = 1; i <= 20; i++) {
+          if (assignments[i]) {
+            var title = String(assignments[i]).replace(/"/g, '""');
+            csv += 'Kelompok ' + i + ',"' + title + '"\n';
+          }
+        }
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        var timestamp = new Date().toISOString().slice(0,19).replace(/:/g,'-');
+        link.href = url;
+        link.download = 'Hasil_Gacha_Praktikum_' + timestamp + '.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.showToast('✅ File Excel berhasil didownload!');
+      } catch (e) {
+        console.error('saveToExcel error', e);
+        window.showToast('❌ Gagal menyimpan file: ' + (e && e.message ? e.message : 'Error'));
+      }
+    };
+  }
+})();
+</script>
 </body>
 </html>
